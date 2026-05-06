@@ -4,6 +4,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const Analysis = require('./models/Analysis');
 const mongoose = require('mongoose');
+const authRoutes = require("./routes/authRoutes");
 
 mongoose.connect('mongodb://127.0.0.1:27017/refactorx')
 .then(() => console.log("MongoDB connected"))
@@ -18,6 +19,8 @@ const cors = require('cors');
 app.use(cors());
 
 app.use(express.json());
+
+app.use("/api/auth", authRoutes);
 
 app.get('/', (req, res) => {
   res.json({

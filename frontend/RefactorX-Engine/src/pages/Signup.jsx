@@ -1,7 +1,69 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, User } from "lucide-react";
+import { useState } from "react";
 
 export default function Signup() {
+  const navigate = useNavigate();
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+
+    try {
+
+      setLoading(true);
+
+      const response = await fetch(
+        "http://localhost:3000/api/auth/signup",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify({
+            name,
+            email,
+            password,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      console.log(data);
+
+      if (response.ok) {
+
+        localStorage.setItem("token", data.token);
+
+        alert("Signup Successful 🚀");
+
+        navigate("/dashboard");
+
+      } else {
+
+        alert(data.message || "Signup failed");
+
+      }
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert("Server Error");
+
+    } finally {
+
+      setLoading(false);
+
+    }
+  };
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0f172a] flex items-center justify-center px-6">
 
@@ -73,7 +135,10 @@ export default function Signup() {
         </div>
 
         {/* Form */}
-        <form className="space-y-6">
+        <form
+          onSubmit={handleSignup}
+          className="space-y-6"
+        >
 
           {/* Name */}
           <div>
@@ -95,6 +160,8 @@ export default function Signup() {
               <User className="text-slate-500" size={20} />
 
               <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 type="text"
                 placeholder="John Doe"
                 className="
@@ -130,6 +197,8 @@ export default function Signup() {
               <Mail className="text-slate-500" size={20} />
 
               <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 type="email"
                 placeholder="you@example.com"
                 className="
@@ -165,6 +234,8 @@ export default function Signup() {
               <Lock className="text-slate-500" size={20} />
 
               <input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 type="password"
                 placeholder="••••••••"
                 className="
@@ -195,7 +266,7 @@ export default function Signup() {
               shadow-[0_0_40px_rgba(34,211,238,0.25)]
             "
           >
-            Create Account
+            {loading ? "Creating..." : "Create Account"}
           </button>
 
         </form>

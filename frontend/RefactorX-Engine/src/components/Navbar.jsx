@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 export default function Navbar() {
   return (
     <nav className="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
@@ -33,7 +34,24 @@ export default function Navbar() {
         </a>
 
       </div>
-      <button className="bg-blue-500 px-4 py-2 rounded-lg">Start</button>
+      <Link
+        to="/signup"
+        className="
+    bg-cyan-400
+    text-black
+    px-5
+    py-2.5
+    rounded-xl
+    font-semibold
+    hover:scale-105
+    hover:bg-cyan-300
+    transition-all
+    duration-300
+    shadow-[0_0_30px_rgba(34,211,238,0.25)]
+  "
+      >
+        Start Free
+      </Link>
     </nav>
   );
 }

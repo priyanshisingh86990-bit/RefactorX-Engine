@@ -1,0 +1,146 @@
+import {
+  LayoutDashboard,
+  Sparkles,
+  History,
+  FolderKanban,
+  Settings,
+  LogOut,
+} from "lucide-react";
+
+const menuItems = [
+  {
+    title: "Overview",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "AI Analyzer",
+    icon: Sparkles,
+  },
+  {
+    title: "History",
+    icon: History,
+  },
+  {
+    title: "Projects",
+    icon: FolderKanban,
+  },
+  {
+    title: "Settings",
+    icon: Settings,
+  },
+];
+
+export default function Sidebar() {
+  return (
+    <div className="
+      w-[280px]
+      min-h-screen
+      border-r
+      border-white/10
+      bg-white/[0.03]
+      backdrop-blur-xl
+      p-6
+      flex
+      flex-col
+      justify-between
+    ">
+
+      <div>
+
+        {/* Logo */}
+        <div className="flex items-center gap-4 mb-14">
+
+          <div className="
+            w-14
+            h-14
+            rounded-2xl
+            bg-cyan-500/10
+            border border-cyan-400/20
+            flex items-center justify-center
+            text-cyan-400
+            text-2xl
+            font-bold
+          ">
+            R
+          </div>
+
+          <div>
+
+            <h2 className="text-white text-2xl font-bold">
+              RefactorX
+            </h2>
+
+            <p className="text-slate-500 text-sm">
+              AI Workspace
+            </p>
+
+          </div>
+
+        </div>
+
+        {/* Menu */}
+        <div className="space-y-3">
+
+          {menuItems.map((item, index) => {
+            const Icon = item.icon;
+
+            return (
+              <button
+                key={index}
+                className="
+                  w-full
+                  flex
+                  items-center
+                  gap-4
+                  px-5
+                  py-4
+                  rounded-2xl
+                  text-slate-300
+                  hover:bg-cyan-500/10
+                  hover:text-cyan-400
+                  transition-all
+                  duration-300
+                  group
+                "
+              >
+
+                <Icon
+                  size={22}
+                  className="group-hover:scale-110 transition"
+                />
+
+                <span className="font-medium">
+                  {item.title}
+                </span>
+
+              </button>
+            );
+          })}
+
+        </div>
+
+      </div>
+
+      {/* Logout */}
+      <button className="
+        flex
+        items-center
+        gap-4
+        px-5
+        py-4
+        rounded-2xl
+        bg-red-500/10
+        text-red-400
+        hover:bg-red-500/20
+        transition-all
+      ">
+
+        <LogOut size={22} />
+
+        Logout
+
+      </button>
+
+    </div>
+  );
+}

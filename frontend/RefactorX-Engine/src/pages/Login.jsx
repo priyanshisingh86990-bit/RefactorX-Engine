@@ -1,7 +1,68 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
+import { useState } from "react";
 
 export default function Login() {
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e) => {
+
+    e.preventDefault();
+
+    try {
+
+      setLoading(true);
+
+      const response = await fetch(
+        "http://localhost:3000/api/auth/login",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      console.log(data);
+
+      if (response.ok) {
+
+        localStorage.setItem("token", data.token);
+
+        alert("Login Successful 🚀");
+
+        navigate("/dashboard");
+
+      } else {
+
+        alert(data.message || "Login failed");
+
+      }
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert("Server Error");
+
+    } finally {
+
+      setLoading(false);
+
+    }
+  };
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0f172a] flex items-center justify-center px-6">
 
@@ -73,7 +134,10 @@ export default function Login() {
         </div>
 
         {/* Form */}
-        <form className="space-y-6">
+        <form
+          onSubmit={handleLogin}
+          className="space-y-6"
+        >
 
           {/* Email */}
           <div>
@@ -95,6 +159,8 @@ export default function Login() {
               <Mail className="text-slate-500" size={20} />
 
               <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 type="email"
                 placeholder="you@example.com"
                 className="
@@ -141,6 +207,8 @@ export default function Login() {
               <Lock className="text-slate-500" size={20} />
 
               <input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 type="password"
                 placeholder="••••••••"
                 className="
@@ -171,7 +239,7 @@ export default function Login() {
               shadow-[0_0_40px_rgba(34,211,238,0.25)]
             "
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
 
         </form>

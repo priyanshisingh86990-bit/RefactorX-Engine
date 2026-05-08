@@ -1,26 +1,50 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
-import Login from "./pages/Login";
+
 import Signup from "./pages/Signup";
-import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+
+import DashboardLayout from "./components/dashboard/DashboardLayout";
+
+import Overview from "./pages/dashboard/Overview";
+import Analyzer from "./pages/dashboard/Analyzer";
+import History from "./pages/dashboard/History";
+import Projects from "./pages/dashboard/Projects";
+import Settings from "./pages/dashboard/Settings";
+import Profile from "./pages/dashboard/Profile";
 
 export default function App() {
+
   return (
-    <BrowserRouter>
 
-      <Routes>
+    <Routes>
 
-        <Route path="/" element={<Home />} />
+      {/* Landing */}
+      <Route path="/" element={<Home />} />
 
-        <Route path="/login" element={<Login />} />
+      {/* Auth */}
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/login" element={<Login />} />
 
-        <Route path="/signup" element={<Signup />} />
+      {/* Dashboard */}
+      <Route path="/dashboard" element={<DashboardLayout />}>
 
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route index element={<Overview />} />
 
-      </Routes>
+        <Route path="analyzer" element={<Analyzer />} />
 
-    </BrowserRouter>
+        <Route path="history" element={<History />} />
+
+        <Route path="projects" element={<Projects />} />
+
+        <Route path="settings" element={<Settings />} />
+
+        <Route path="profile" element={<Profile />} />
+
+      </Route>
+
+    </Routes>
+
   );
 }

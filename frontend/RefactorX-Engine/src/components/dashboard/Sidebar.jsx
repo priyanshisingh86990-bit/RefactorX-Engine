@@ -30,7 +30,10 @@ const menuItems = [
   },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({
+  activePage,
+  setActivePage,
+}) {
   return (
     <div className="
       w-[280px]

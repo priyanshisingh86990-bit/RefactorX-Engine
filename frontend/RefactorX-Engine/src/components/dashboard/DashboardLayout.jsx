@@ -9,6 +9,7 @@ export default function DashboardLayout() {
     const [analysis, setAnalysis] = useState(null);
     const [language, setLanguage] = useState("JavaScript");
     const [activeTab, setActiveTab] = useState("bugs");
+    const [activePage, setActivePage] = useState("overview");
 
     const handleAnalyze = async () => {
 
@@ -67,8 +68,10 @@ export default function DashboardLayout() {
     ">
 
             {/* Sidebar */}
-            <Sidebar />
-
+            <Sidebar
+                activePage={activePage}
+                setActivePage={setActivePage}
+            />
             {/* Main */}
             <div className="flex-1 flex flex-col">
 

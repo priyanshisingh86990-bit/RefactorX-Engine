@@ -2,6 +2,12 @@ import { useState } from "react";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import Editor from "@monaco-editor/react";
+import Overview from "../../pages/dashboard/Overview";
+import Analyzer from "../../pages/dashboard/Analyzer";
+import History from "../../pages/dashboard/History";
+import Projects from "../../pages/dashboard/Projects";
+import Settings from "../../pages/dashboard/Settings";
+import Profile from "../../pages/dashboard/Profile";
 
 export default function DashboardLayout() {
     const [code, setCode] = useState("");
@@ -76,369 +82,36 @@ export default function DashboardLayout() {
             <div className="flex-1 flex flex-col">
 
                 {/* Topbar */}
-                <Topbar />
+                <Topbar
+                setActivePage={setActivePage} />
 
                 {/* Content */}
                 <div className="flex-1 p-8 overflow-y-auto">
 
-                    {/* Hero */}
-                    <div className="mb-10">
 
-                        <h1 className="
-  text-4xl
-  font-bold
-  text-white
-  mb-3
-">
-                            AI Code Analysis Workspace
-                        </h1>
+                    {activePage === "overview" && (
+                        <Overview />
+                    )}
 
-                        <p className="text-slate-400 text-base">
-                            Analyze, optimize and refactor production-grade
-                            codebases with intelligent AI assistance.
-                        </p>
+                    {activePage === "analyzer" && (
+                        <Analyzer />
+                    )}
 
-                    </div>
+                    {activePage === "history" && (
+                        <History />
+                    )}
 
-                    <div className="grid lg:grid-cols-2 gap-8">
+                    {activePage === "projects" && (
+                        <Projects />
+                    )}
 
-                        {/* LEFT PANEL */}
-                        <div className="
-    rounded-[32px]
-    border border-white/10
-    bg-white/[0.03]
-    backdrop-blur-xl
-    p-8
-  ">
+                    {activePage === "settings" && (
+                        <Settings />
+                    )}
 
-                            {/* Header */}
-                            <div className="flex items-center justify-between mb-8">
-
-                                <div>
-
-                                    <h2 className="text-2xl font-bold text-white mb-2">
-                                        Code Analyzer
-                                    </h2>
-
-                                    <p className="text-slate-400">
-                                        Paste your code and let AI optimize it.
-                                    </p>
-
-                                </div>
-
-                                {/* Language */}
-                                <select
-                                    value={language}
-                                    onChange={(e) => setLanguage(e.target.value)}
-                                    className="
-    bg-[#0f172a]
-    border border-white/10
-    text-slate-300
-    rounded-xl
-    px-4
-    py-3
-    outline-none
-  "
-                                >
-                                    <option>JavaScript</option>
-                                    <option>Python</option>
-                                    <option>Java</option>
-                                    <option>C++</option>
-                                </select>
-
-                            </div>
-
-                            {/* Editor */}
-                            <div className="
-  overflow-hidden
-  rounded-2xl
-  border border-white/10
-">
-
-                                <Editor
-                                    height="420px"
-                                    theme="vs-dark"
-                                    language={language.toLowerCase()}
-                                    value={code}
-                                    onChange={(value) => setCode(value || "")}
-                                    options={{
-                                        minimap: {
-                                            enabled: false,
-                                        },
-
-                                        fontSize: 14,
-
-                                        fontFamily: "JetBrains Mono",
-
-                                        padding: {
-                                            top: 20,
-                                        },
-
-                                        smoothScrolling: true,
-
-                                        scrollBeyondLastLine: false,
-
-                                        wordWrap: "on",
-
-                                        automaticLayout: true,
-                                    }}
-                                />
-
-                            </div>
-
-                            {/* Buttons */}
-                            <div className="flex flex-wrap gap-4 mt-6">
-
-                                <button className="
-        py-4
-px-7
-rounded-2xl
-        bg-cyan-400
-        text-black
-        font-semibold
-        hover:scale-105
-        transition-all
-        duration-300
-        shadow-[0_0_35px_rgba(34,211,238,0.35)]
-hover:shadow-[0_0_55px_rgba(34,211,238,0.55)]
-      ">
-                                    Analyze Code
-                                </button>
-
-                                <button className="
-        py-4
-px-7
-rounded-2xl
-        bg-white/5
-        border border-white/10
-        text-white
-        hover:bg-white/10
-        transition-all
-      ">
-                                    Optimize
-                                </button>
-
-                                <button className="
-        py-4
-px-7
-rounded-2xl
-        bg-white/5
-        border border-white/10
-        text-white
-        hover:bg-white/10
-        transition-all
-      ">
-                                    Explain
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                        {/* RIGHT PANEL */}
-                        <div className="
-    rounded-[32px]
-    border border-white/10
-    bg-white/[0.03]
-    backdrop-blur-xl
-    p-8
-    flex
-    flex-col
-  ">
-
-                            {/* Tabs */}
-                            <div className="flex gap-4 mb-8 flex-wrap">
-
-                                <button
-                                    onClick={() => setActiveTab("bugs")}
-                                    className={`
-      px-5
-      py-3
-      rounded-2xl
-      border
-      transition-all
-      duration-300
-
-      ${activeTab === "bugs"
-                                            ? "bg-red-500/10 border-red-500/20 text-red-400"
-                                            : "bg-white/5 border-white/10 text-slate-300"
-                                        }
-    `}
-                                >
-                                    Bug Report
-                                </button>
-
-                                <button
-                                    onClick={() => setActiveTab("optimized")}
-                                    className={`
-      px-5
-      py-3
-      rounded-2xl
-      border
-      transition-all
-      duration-300
-
-      ${activeTab === "optimized"
-                                            ? "bg-cyan-500/10 border-cyan-400/20 text-cyan-400"
-                                            : "bg-white/5 border-white/10 text-slate-300"
-                                        }
-    `}
-                                >
-                                    Optimized Code
-                                </button>
-
-                                <button
-                                    onClick={() => setActiveTab("explanation")}
-                                    className={`
-      px-5
-      py-3
-      rounded-2xl
-      border
-      transition-all
-      duration-300
-
-      ${activeTab === "explanation"
-                                            ? "bg-white/10 border-white/20 text-white"
-                                            : "bg-white/5 border-white/10 text-slate-300"
-                                        }
-    `}
-                                >
-                                    Explanation
-                                </button>
-
-                            </div>
-
-                            {/* Output */}
-                            {analysis ? (
-
-                                <>
-
-                                    {/* BUGS */}
-                                    {activeTab === "bugs" && (
-
-                                        <div className="
-        p-5
-        rounded-2xl
-        bg-red-500/10
-        border border-red-500/20
-      ">
-
-                                            <h3 className="text-red-400 font-semibold mb-4">
-                                                Bug Report
-                                            </h3>
-
-                                            <ul className="space-y-3 text-slate-300">
-
-                                                {analysis.bugs?.length > 0 ? (
-                                                    analysis.bugs.map((bug, index) => (
-                                                        <li key={index}>
-                                                            • {bug}
-                                                        </li>
-                                                    ))
-                                                ) : (
-                                                    <li>No major bugs detected.</li>
-                                                )}
-
-                                            </ul>
-
-                                        </div>
-
-                                    )}
-
-                                    {/* OPTIMIZED */}
-                                    {activeTab === "optimized" && (
-
-                                        <div className="
-        p-5
-        rounded-2xl
-        bg-cyan-500/10
-        border border-cyan-400/20
-      ">
-
-                                            <h3 className="text-cyan-400 font-semibold mb-4">
-                                                Optimized Code
-                                            </h3>
-
-                                            <pre className="
-          text-sm
-          text-slate-300
-          overflow-auto
-          whitespace-pre-wrap
-        ">
-                                                {analysis.optimizedCode ||
-                                                    "No optimization suggested."}
-                                            </pre>
-
-                                        </div>
-
-                                    )}
-
-                                    {/* EXPLANATION */}
-                                    {activeTab === "explanation" && (
-
-                                        <div className="
-        p-5
-        rounded-2xl
-        bg-white/5
-        border border-white/10
-      ">
-
-                                            <h3 className="text-white font-semibold mb-4">
-                                                Explanation
-                                            </h3>
-
-                                            <p className="text-slate-300 leading-relaxed">
-                                                {analysis.explanation}
-                                            </p>
-
-                                        </div>
-
-                                    )}
-
-                                </>
-
-                            ) : (
-
-                                <div className="
-  h-full
-  flex
-  flex-col
-  items-center
-  justify-center
-  text-center
-">
-
-                                    <div className="
-    w-20
-    h-20
-    rounded-3xl
-    bg-cyan-500/10
-    border border-cyan-400/20
-    flex items-center
-    justify-center
-    text-cyan-400
-    text-3xl
-    mb-6
-  ">
-                                        ✨
-                                    </div>
-
-                                    <h3 className="text-white text-xl font-semibold mb-3">
-                                        Ready for AI Analysis
-                                    </h3>
-
-                                    <p className="text-slate-500 max-w-sm leading-relaxed">
-                                        Paste your code into the editor and let RefactorX
-                                        detect bugs, optimize performance and explain improvements.
-                                    </p>
-
-                                </div>
-
-                            )}
-
-                        </div>
-
-                    </div>
+                    {activePage === "profile" && (
+                        <Profile />
+                    )}
 
                 </div>
 

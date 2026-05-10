@@ -10,22 +10,27 @@ import {
 const menuItems = [
   {
     title: "Overview",
+    page: "overview",
     icon: LayoutDashboard,
   },
   {
     title: "AI Analyzer",
+    page: "analyzer",
     icon: Sparkles,
   },
   {
     title: "History",
+    page: "history",
     icon: History,
   },
   {
     title: "Projects",
+    page: "projects",
     icon: FolderKanban,
   },
   {
     title: "Settings",
+    page: "settings",
     icon: Settings,
   },
 ];
@@ -88,23 +93,29 @@ export default function Sidebar({
             const Icon = item.icon;
 
             return (
-              <button
-                key={index}
-                className="
-                  w-full
-                  flex
-                  items-center
-                  gap-4
-                  px-5
-                  py-4
-                  rounded-2xl
-                  text-slate-300
-                  hover:bg-cyan-500/10
-                  hover:text-cyan-400
-                  transition-all
-                  duration-300
-                  group
-                "
+              <button 
+              key={index}
+              onClick={() =>
+                setActivePage(item.page)
+              }
+                
+                className={`
+  w-full
+  flex
+  items-center
+  gap-4
+  px-5
+  py-4
+  rounded-2xl
+  transition-all
+  duration-300
+  group
+
+  ${activePage === item.page
+                    ? "bg-cyan-500/10 text-cyan-400 border border-cyan-400/20 shadow-[0_0_25px_rgba(34,211,238,0.12)]"
+                    : "text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400"
+                  }
+`}
               >
 
                 <Icon

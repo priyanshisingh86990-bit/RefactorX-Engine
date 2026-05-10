@@ -1,4 +1,6 @@
-export default function Topbar() {
+export default function Topbar({
+  setActivePage,
+}) {
   return (
     <div className="
       h-[90px]
@@ -53,19 +55,28 @@ export default function Topbar() {
         </div>
 
         {/* Avatar */}
-        <div className="
-          w-12
-          h-12
-          rounded-full
-          bg-cyan-400
-          text-black
-          flex
-          items-center
-          justify-center
-          font-bold
-        ">
+        <button
+          onClick={() => setActivePage("profile")}
+          className="
+    w-12
+    h-12
+    rounded-full
+    bg-cyan-400
+    text-black
+    font-semibold
+    flex
+    items-center
+    justify-center
+    hover:scale-105
+    transition-all
+    duration-300
+    shadow-[0_0_30px_rgba(34,211,238,0.35)]
+  "
+        >
+
           P
-        </div>
+
+        </button>
 
       </div>
 

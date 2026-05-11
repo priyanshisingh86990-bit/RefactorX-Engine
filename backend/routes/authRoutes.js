@@ -1,9 +1,10 @@
 const express = require("express");
+const router = express.Router();
+
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
 
-const router = express.Router();
+const User = require("../models/User");
 
 
 // SIGNUP
@@ -13,13 +14,7 @@ router.post("/signup", async (req, res) => {
 
     const { name, email, password } = req.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({
-        message: "All fields are required",
-      });
-    }
-
-    // CHECK EXISTING USER
+    // check existing user
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
@@ -28,17 +23,17 @@ router.post("/signup", async (req, res) => {
       });
     }
 
-    // HASH PASSWORD
+    // hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // CREATE USER
+    // create user
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
     });
 
-    // JWT TOKEN
+    // jwt token
     const token = jwt.sign(
       {
         id: user._id,
@@ -50,7 +45,7 @@ router.post("/signup", async (req, res) => {
     );
 
     res.status(201).json({
-      success: true,
+      message: "Signup successful",
       token,
       user: {
         id: user._id,
@@ -64,7 +59,7 @@ router.post("/signup", async (req, res) => {
     console.log(error);
 
     res.status(500).json({
-      message: "Server Error",
+      message: "Server error",
     });
 
   }
@@ -79,13 +74,7 @@ router.post("/login", async (req, res) => {
 
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({
-        message: "All fields are required",
-      });
-    }
-
-    // FIND USER
+    // find user
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -94,7 +83,7 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    // COMPARE PASSWORD
+    // compare password
     const isMatch = await bcrypt.compare(
       password,
       user.password
@@ -106,7 +95,7 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    // JWT TOKEN
+    // create token
     const token = jwt.sign(
       {
         id: user._id,
@@ -118,7 +107,7 @@ router.post("/login", async (req, res) => {
     );
 
     res.json({
-      success: true,
+      message: "Login successful",
       token,
       user: {
         id: user._id,
@@ -132,7 +121,7 @@ router.post("/login", async (req, res) => {
     console.log(error);
 
     res.status(500).json({
-      message: "Server Error",
+      message: "Server error",
     });
 
   }

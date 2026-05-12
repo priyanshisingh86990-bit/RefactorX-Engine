@@ -1,31 +1,74 @@
-export default function Projects() {
+import React from "react";
+import { useEffect, useState } from "react";
 
-  const projects = [
-    {
-      name: "RefactorX Frontend",
-      description:
-        "AI-powered dashboard interface with Monaco editor and intelligent workflows.",
-      stack: ["React", "Tailwind", "Monaco"],
-      status: "Active",
-      progress: "82%",
-    },
-    {
-      name: "Authentication Engine",
-      description:
-        "Secure JWT authentication system with protected workspace access.",
-      stack: ["Node.js", "JWT", "MongoDB"],
-      status: "Completed",
-      progress: "100%",
-    },
-    {
-      name: "AI Optimization Workspace",
-      description:
-        "Smart code analysis system focused on performance and readability improvements.",
-      stack: ["OpenAI", "Express", "React"],
-      status: "In Progress",
-      progress: "64%",
-    },
-  ];
+export default function Projects() {
+  const [projects, setProjects] = useState([]);
+  const [stats, setStats] = useState({
+    totalProjects: 0,
+    activeWorkspaces: 0,
+    completedProjects: 0,
+  });
+  useEffect(() => {
+
+    const fetchProjects = async () => {
+
+      try {
+
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(
+          "http://localhost:3000/api/auth/projects",
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        setProjects(data);
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+
+    };
+
+    fetchProjects();
+
+  }, []);
+  useEffect(() => {
+
+    const fetchProjectStats =
+      async () => {
+
+        try {
+
+          const response =
+            await fetch(
+              "http://localhost:5000/api/dashboard/stats"
+            );
+
+          const data =
+            await response.json();
+
+          setStats(data.projectStats);
+
+        } catch (error) {
+
+          console.log(error);
+
+        }
+
+      };
+
+    fetchProjectStats();
+
+  }, []);
+
 
   return (
 
@@ -117,7 +160,7 @@ export default function Projects() {
             font-bold
             text-white
           ">
-            12
+            {stats.totalProjects}
           </h2>
 
         </div>
@@ -140,7 +183,7 @@ export default function Projects() {
             font-bold
             text-cyan-400
           ">
-            5
+            {stats.activeWorkspaces}
           </h2>
 
         </div>
@@ -163,7 +206,7 @@ export default function Projects() {
             font-bold
             text-green-400
           ">
-            7
+            {stats.completedProjects}
           </h2>
 
         </div>
@@ -178,207 +221,61 @@ export default function Projects() {
         gap-7
       ">
 
-        {projects.map((project, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-          <div
-            key={index}
-            className="
-              rounded-[32px]
-              border border-white/10
-              bg-white/[0.03]
-              backdrop-blur-xl
-              p-7
-              hover:border-cyan-400/20
-              transition-all
-              duration-300
-              group
-            "
-          >
+          {projects.map((project, index) => (
 
-            {/* Top */}
-            <div className="
-              flex
-              items-start
-              justify-between
-              mb-7
-            ">
+            <div
+              key={index}
+              className="
+        p-6
+        rounded-3xl
+        border
+        border-white/10
+        bg-[#111827]
+      "
+            >
 
-              {/* Icon */}
-              <div className="
-                w-16
-                h-16
-                rounded-3xl
-                bg-cyan-500/10
-                border border-cyan-400/20
-                flex
-                items-center
-                justify-center
-                text-cyan-400
-                text-3xl
-                group-hover:scale-105
-                transition-all
-              ">
-                ⚡
-              </div>
+              <h3
+                className="
+          text-xl
+          font-semibold
+          text-white
+          mb-3
+        "
+              >
+                {project.title}
+              </h3>
 
-              {/* Status */}
-              <div className={`
-                px-4
-                py-2
-                rounded-2xl
-                text-sm
-                font-medium
-
-                ${
-                  project.status === "Active"
-                    ? "bg-cyan-500/10 text-cyan-400 border border-cyan-400/20"
-                    : project.status === "Completed"
-                    ? "bg-green-500/10 text-green-400 border border-green-400/20"
-                    : "bg-yellow-500/10 text-yellow-400 border border-yellow-400/20"
-                }
-              `}>
-
-                {project.status}
-
-              </div>
-
-            </div>
-
-            {/* Content */}
-            <div>
-
-              <h2 className="
-                text-2xl
-                font-bold
-                text-white
-                mb-4
-              ">
-                {project.name}
-              </h2>
-
-              <p className="
-                text-slate-500
-                leading-relaxed
-                mb-6
-              ">
-                {project.description}
+              <p
+                className="
+          text-slate-400
+          text-sm
+          mb-4
+        "
+              >
+                {project.language}
               </p>
 
-            </div>
-
-            {/* Stack */}
-            <div className="
-              flex
-              flex-wrap
-              gap-3
-              mb-7
-            ">
-
-              {project.stack.map((tech, i) => (
-
-                <span
-                  key={i}
-                  className="
-                    px-4
-                    py-2
-                    rounded-2xl
-                    bg-white/5
-                    border border-white/10
-                    text-slate-300
-                    text-sm
-                  "
-                >
-
-                  {tech}
-
-                </span>
-
-              ))}
-
-            </div>
-
-            {/* Progress */}
-            <div className="mb-7">
-
-              <div className="
-                flex
-                items-center
-                justify-between
-                mb-3
-              ">
-
-                <span className="text-slate-400">
-                  Progress
-                </span>
-
-                <span className="text-white font-medium">
-                  {project.progress}
-                </span>
-
-              </div>
-
-              <div className="
-                w-full
-                h-3
-                rounded-full
-                bg-white/5
-                overflow-hidden
-              ">
-
-                <div
-                  className="
-                    h-full
-                    rounded-full
-                    bg-cyan-400
-                  "
-                  style={{
-                    width: project.progress,
-                  }}
-                />
-
+              <div
+                className="
+          p-4
+          rounded-2xl
+          bg-[#0f172a]
+          text-slate-300
+          text-sm
+          max-h-40
+          overflow-hidden
+        "
+              >
+                {project.code.slice(0, 200)}...
               </div>
 
             </div>
 
-            {/* Buttons */}
-            <div className="
-              flex
-              items-center
-              gap-4
-            ">
+          ))}
 
-              <button className="
-                flex-1
-                px-5
-                py-4
-                rounded-2xl
-                bg-cyan-500/10
-                border border-cyan-400/20
-                text-cyan-400
-                hover:bg-cyan-500/20
-                transition-all
-              ">
-                Open Workspace
-              </button>
-
-              <button className="
-                px-5
-                py-4
-                rounded-2xl
-                bg-white/5
-                border border-white/10
-                text-slate-300
-                hover:bg-white/10
-                transition-all
-              ">
-                View
-              </button>
-
-            </div>
-
-          </div>
-
-        ))}
+        </div>
 
       </div>
 

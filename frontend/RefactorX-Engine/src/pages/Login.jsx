@@ -11,58 +11,58 @@ export default function Login() {
 
   const handleLogin = async (e) => {
 
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
+  try {
 
-      setLoading(true);
+    const response = await fetch(
+      "http://localhost:3000/api/auth/login",
+      {
+        method: "POST",
 
-      const response = await fetch(
-        "http://localhost:3000/api/auth/login",
-        {
-          method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-          headers: {
-            "Content-Type": "application/json",
-          },
-
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      console.log(data);
-
-      if (response.ok) {
-
-        localStorage.setItem("token", data.token);
-
-        alert("Login Successful 🚀");
-
-        navigate("/dashboard");
-
-      } else {
-
-        alert(data.message || "Login failed");
-
+        body: JSON.stringify({
+          email,
+          password,
+        }),
       }
+    );
 
-    } catch (error) {
+    const data = await response.json();
 
-      console.log(error);
-
-      alert("Server Error");
-
-    } finally {
-
-      setLoading(false);
-
+    if (!response.ok) {
+      alert(data.message);
+      return;
     }
-  };
+
+    // save token
+    localStorage.setItem(
+      "token",
+      data.token
+    );
+
+    // save user
+    localStorage.setItem(
+      "user",
+      JSON.stringify(data.user)
+    );
+
+    alert("Login successful");
+
+    navigate("/dashboard");
+
+  } catch (error) {
+
+    console.log(error);
+
+    alert("Something went wrong");
+
+  }
+
+};
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0f172a] flex items-center justify-center px-6">
 

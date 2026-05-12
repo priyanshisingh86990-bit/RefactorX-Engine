@@ -1,4 +1,78 @@
+import React from "react";
+import {
+  useEffect,
+  useState
+} from "react";
+
+
 export default function Overview() {
+
+  const [history, setHistory] = useState([]);
+  const [stats, setStats] = useState({
+    totalAnalyses: 0,
+    savedProjects: 0,
+    aiCredits: 0,
+    recentActivity: [],
+  });
+
+  useEffect(() => {
+
+    const fetchHistory = async () => {
+
+      try {
+
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(
+          "http://localhost:3000/api/auth/analysis",
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        setHistory(data);
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+
+    };
+
+    fetchHistory();
+
+  }, []);
+
+  useEffect(() => {
+
+    const fetchStats = async () => {
+
+      try {
+
+        const response = await fetch(
+          "http://localhost:5000/api/dashboard/stats"
+        );
+
+        const data = await response.json();
+
+        setStats(data);
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+
+    };
+
+    fetchStats();
+
+  }, []);
 
   return (
 
@@ -43,7 +117,7 @@ export default function Overview() {
           </p>
 
           <h2 className="text-4xl font-bold text-white">
-            42
+            {stats.totalAnalyses}
           </h2>
 
         </div>
@@ -61,7 +135,7 @@ export default function Overview() {
           </p>
 
           <h2 className="text-4xl font-bold text-cyan-400">
-            8
+            {stats.savedProjects}
           </h2>
 
         </div>
@@ -79,7 +153,7 @@ export default function Overview() {
           </p>
 
           <h2 className="text-4xl font-bold text-green-400">
-            42
+            {stats.aiCredits}
           </h2>
 
         </div>
@@ -105,73 +179,47 @@ export default function Overview() {
 
         <div className="space-y-4">
 
-          <div className="
-            flex
-            items-center
-            justify-between
-            p-4
-            rounded-2xl
-            bg-[#0f172a]
-          ">
+          {history.slice(0, 3).map((item, index) => (
 
-            <div>
+            <div
+              key={index}
+              className="
+        flex
+        items-center
+        justify-between
+        p-4
+        rounded-2xl
+        bg-[#0f172a]
+      "
+            >
 
-              <p className="text-white font-medium">
-                React Authentication Fix
-              </p>
+              <div>
 
-              <p className="text-slate-500 text-sm">
-                JavaScript • 2 hours ago
-              </p>
+                <p className="text-white font-medium">
+                  {item.language} Analysis
+                </p>
 
-            </div>
+                <p className="text-slate-500 text-sm">
+                  {new Date(item.createdAt)
+                    .toLocaleString()}
+                </p>
 
-            <span className="
-              px-4
-              py-2
-              rounded-xl
-              bg-cyan-500/10
-              text-cyan-400
-              text-sm
-            ">
-              Optimized
-            </span>
+              </div>
 
-          </div>
-
-          <div className="
-            flex
-            items-center
-            justify-between
-            p-4
-            rounded-2xl
-            bg-[#0f172a]
-          ">
-
-            <div>
-
-              <p className="text-white font-medium">
-                Node API Refactor
-              </p>
-
-              <p className="text-slate-500 text-sm">
-                Node.js • Yesterday
-              </p>
+              <span className="
+        px-4
+        py-2
+        rounded-xl
+        bg-cyan-500/10
+        text-cyan-400
+        text-sm
+      ">
+                Saved
+              </span>
 
             </div>
 
-            <span className="
-              px-4
-              py-2
-              rounded-xl
-              bg-green-500/10
-              text-green-400
-              text-sm
-            ">
-              Completed
-            </span>
-
-          </div>
+          ))}
 
         </div>
 

@@ -10,60 +10,61 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSignup = async (e) => {
-    e.preventDefault();
+ const handleSignup = async (e) => {
 
-    try {
+  e.preventDefault();
 
-      setLoading(true);
+  try {
 
-      const response = await fetch(
-        "http://localhost:3000/api/auth/signup",
-        {
-          method: "POST",
+    const response = await fetch(
+      "http://localhost:3000/api/auth/signup",
+      {
+        method: "POST",
 
-          headers: {
-            "Content-Type": "application/json",
-          },
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-          body: JSON.stringify({
-            name,
-            email,
-            password,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      console.log(data);
-
-      if (response.ok) {
-
-        localStorage.setItem("token", data.token);
-
-        alert("Signup Successful 🚀");
-
-        navigate("/dashboard");
-
-      } else {
-
-        alert(data.message || "Signup failed");
-
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
       }
+    );
 
-    } catch (error) {
+    const data = await response.json();
 
-      console.log(error);
-
-      alert("Server Error");
-
-    } finally {
-
-      setLoading(false);
-
+    if (!response.ok) {
+      alert(data.message);
+      return;
     }
-  };
+
+    // save token
+    localStorage.setItem(
+      "token",
+      data.token
+    );
+
+    // save user
+    localStorage.setItem(
+      "user",
+      JSON.stringify(data.user)
+    );
+
+    alert("Signup successful");
+
+    navigate("/dashboard");
+
+  } catch (error) {
+
+    console.log(error);
+
+    alert("Something went wrong");
+
+  }
+
+};
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#0f172a] flex items-center justify-center px-6">
 

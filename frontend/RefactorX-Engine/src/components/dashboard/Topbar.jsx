@@ -1,5 +1,6 @@
 export default function Topbar({
   setActivePage,
+  user,
 }) {
   return (
     <div className="
@@ -74,7 +75,7 @@ export default function Topbar({
   "
         >
 
-          P
+          {user?.name?.charAt(0).toUpperCase()}
 
         </button>
 

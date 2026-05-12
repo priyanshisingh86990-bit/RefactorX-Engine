@@ -5,6 +5,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
+const Analysis = require("../models/Analysis");
+const Project = require("../models/Project");
 
 
 // SIGNUP
@@ -115,6 +117,263 @@ router.post("/login", async (req, res) => {
         email: user.email,
       },
     });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+
+  }
+
+});
+
+router.get("/profile", async (req, res) => {
+
+  try {
+
+    const token = req.headers.authorization;
+
+    if (!token) {
+      return res.status(401).json({
+        message: "No token",
+      });
+    }
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    const user = await User.findById(decoded.id)
+      .select("-password");
+
+    res.json(user);
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+
+  }
+
+});
+
+router.put("/settings", async (req, res) => {
+
+  try {
+
+    const token = req.headers.authorization;
+
+    if (!token) {
+      return res.status(401).json({
+        message: "No token",
+      });
+    }
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    const {
+      theme,
+      notifications,
+    } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+
+      decoded.id,
+
+      {
+        theme,
+        notifications,
+      },
+
+      {
+        new: true,
+      }
+
+    ).select("-password");
+
+    res.json(updatedUser);
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+
+  }
+
+});
+
+router.post("/analysis", async (req, res) => {
+
+  try {
+
+    const token = req.headers.authorization;
+
+    if (!token) {
+      return res.status(401).json({
+        message: "No token",
+      });
+    }
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    const {
+      code,
+      language,
+      result,
+    } = req.body;
+
+    const analysis = await Analysis.create({
+
+      userId: decoded.id,
+
+      code,
+      language,
+      result,
+
+    });
+
+    res.status(201).json(analysis);
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+
+  }
+
+});
+
+router.get("/analysis", async (req, res) => {
+
+  try {
+
+    const token = req.headers.authorization;
+
+    if (!token) {
+      return res.status(401).json({
+        message: "No token",
+      });
+    }
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    const analyses = await Analysis.find({
+
+      userId: decoded.id,
+
+    }).sort({
+      createdAt: -1,
+    });
+
+    res.json(analyses);
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+
+  }
+
+});
+
+router.post("/projects", async (req, res) => {
+
+  try {
+
+    const token = req.headers.authorization;
+
+    if (!token) {
+      return res.status(401).json({
+        message: "No token",
+      });
+    }
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    const {
+      title,
+      code,
+      language,
+    } = req.body;
+
+    const project = await Project.create({
+
+      userId: decoded.id,
+
+      title,
+      code,
+      language,
+
+    });
+
+    res.status(201).json(project);
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      message: "Server error",
+    });
+
+  }
+
+});
+
+router.get("/projects", async (req, res) => {
+
+  try {
+
+    const token = req.headers.authorization;
+
+    if (!token) {
+      return res.status(401).json({
+        message: "No token",
+      });
+    }
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    const projects = await Project.find({
+
+      userId: decoded.id,
+
+    }).sort({
+      createdAt: -1,
+    });
+
+    res.json(projects);
 
   } catch (error) {
 

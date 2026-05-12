@@ -1,35 +1,76 @@
+import { useEffect, useState } from "react";
+
 export default function History() {
 
-  const historyItems = [
-    {
-      title: "Authentication System Refactor",
-      language: "JavaScript",
-      status: "Optimized",
-      score: "92%",
-      date: "2 hours ago",
-    },
-    {
-      title: "Node API Performance Cleanup",
-      language: "Node.js",
-      status: "Completed",
-      score: "88%",
-      date: "Yesterday",
-    },
-    {
-      title: "React Dashboard Analysis",
-      language: "React",
-      status: "In Review",
-      score: "76%",
-      date: "2 days ago",
-    },
-    {
-      title: "MongoDB Query Optimization",
-      language: "Backend",
-      status: "Optimized",
-      score: "95%",
-      date: "3 days ago",
-    },
-  ];
+  const historyItems = [];
+
+  const [history, setHistory] = useState([]);
+  const [stats, setStats] = useState({
+    totalAnalyses: 0,
+    optimizedProjects: 0,
+    successRate: 0,
+  });
+  useEffect(() => {
+
+    const fetchHistory = async () => {
+
+      try {
+
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(
+          "http://localhost:3000/api/auth/analysis",
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        setHistory(data);
+
+      } catch (error) {
+
+        console.log(error);
+
+      }
+
+    };
+
+    fetchHistory();
+
+  }, []);
+
+  useEffect(() => {
+
+    const fetchHistoryStats =
+      async () => {
+
+        try {
+
+          const response =
+            await fetch(
+              "http://localhost:5000/api/dashboard/stats"
+            );
+
+          const data =
+            await response.json();
+
+          setStats(data.historyStats);
+
+        } catch (error) {
+
+          console.log(error);
+
+        }
+
+      };
+
+    fetchHistoryStats();
+
+  }, []);
 
   return (
 
@@ -116,7 +157,7 @@ export default function History() {
             font-bold
             text-white
           ">
-            42
+            {stats.totalAnalyses}
           </h2>
 
         </div>
@@ -139,7 +180,7 @@ export default function History() {
             font-bold
             text-cyan-400
           ">
-            31
+            {stats.optimizedProjects}
           </h2>
 
         </div>
@@ -162,7 +203,7 @@ export default function History() {
             font-bold
             text-green-400
           ">
-            94%
+            {stats.successRate}%
           </h2>
 
         </div>
@@ -308,10 +349,9 @@ export default function History() {
                   rounded-2xl
                   font-medium
 
-                  ${
-                    item.status === "Optimized"
-                      ? "bg-cyan-500/10 text-cyan-400 border border-cyan-400/20"
-                      : item.status === "Completed"
+                  ${item.status === "Optimized"
+                    ? "bg-cyan-500/10 text-cyan-400 border border-cyan-400/20"
+                    : item.status === "Completed"
                       ? "bg-green-500/10 text-green-400 border border-green-400/20"
                       : "bg-yellow-500/10 text-yellow-400 border border-yellow-400/20"
                   }

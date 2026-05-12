@@ -93,12 +93,12 @@ export default function Sidebar({
             const Icon = item.icon;
 
             return (
-              <button 
-              key={index}
-              onClick={() =>
-                setActivePage(item.page)
-              }
-                
+              <button
+                key={index}
+                onClick={() =>
+                  setActivePage(item.page)
+                }
+
                 className={`
   w-full
   flex
@@ -136,20 +136,31 @@ export default function Sidebar({
       </div>
 
       {/* Logout */}
-      <button className="
-        flex
-        items-center
-        gap-4
-        px-5
-        py-4
-        rounded-2xl
-        bg-red-500/10
-        text-red-400
-        hover:bg-red-500/20
-        transition-all
-      ">
+      <button
 
-        <LogOut size={22} />
+        onClick={() => {
+
+          localStorage.removeItem("token");
+
+          localStorage.removeItem("user");
+
+          window.location.href = "/login";
+
+        }}
+
+        className="
+    w-full
+    flex
+    items-center
+    gap-3
+    px-4
+    py-3
+    rounded-xl
+    text-red-400
+    hover:bg-red-500/10
+    transition-all
+  "
+      >
 
         Logout
 

@@ -1,10 +1,15 @@
 const mongoose = require("mongoose");
 
-const analysisSchema = new mongoose.Schema({
+const projectSchema = new mongoose.Schema({
 
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+  },
+
+  title: {
+    type: String,
+    required: true,
   },
 
   code: {
@@ -17,16 +22,11 @@ const analysisSchema = new mongoose.Schema({
     required: true,
   },
 
-  result: {
-    type: String,
-    default: "",
-  },
-
 }, {
   timestamps: true,
 });
 
 module.exports = mongoose.model(
-  "Analysis",
-  analysisSchema
+  "Project",
+  projectSchema
 );

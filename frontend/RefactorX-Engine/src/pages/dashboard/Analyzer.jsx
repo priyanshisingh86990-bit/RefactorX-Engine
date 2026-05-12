@@ -6,6 +6,71 @@ export default function Analyzer() {
   const [code, setCode] = useState("");
   const [language, setLanguage] = useState("javascript");
   const [activeTab, setActiveTab] = useState("bugs");
+  const handleAnalyze = async () => {
+
+    if (!code.trim()) {
+      alert("Please enter code");
+      return;
+    }
+
+    try {
+
+      setLoading(true);
+
+      const token = localStorage.getItem("token");
+
+      // TEMPORARY DEMO RESULT
+      const fakeResult = `
+Bug Found:
+- Missing semicolon
+- Unused variable
+
+Optimization:
+- Use map instead of loop
+
+Explanation:
+- Code can be optimized for readability
+`;
+
+      // save analysis
+      const response = await fetch(
+        "http://localhost:3000/api/auth/analysis",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+
+          body: JSON.stringify({
+            code,
+            language,
+            result: fakeResult,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      console.log(data);
+
+      // show result in UI
+      setAnalysis(fakeResult);
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert("Something went wrong");
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+  };
 
   return (
 
@@ -311,10 +376,9 @@ export default function Analyzer() {
                 transition-all
                 duration-300
 
-                ${
-                  activeTab === "bugs"
-                    ? "bg-red-500/10 border-red-500/20 text-red-400"
-                    : "bg-white/5 border-white/10 text-slate-300"
+                ${activeTab === "bugs"
+                  ? "bg-red-500/10 border-red-500/20 text-red-400"
+                  : "bg-white/5 border-white/10 text-slate-300"
                 }
               `}
             >
@@ -331,10 +395,9 @@ export default function Analyzer() {
                 transition-all
                 duration-300
 
-                ${
-                  activeTab === "optimized"
-                    ? "bg-cyan-500/10 border-cyan-400/20 text-cyan-400"
-                    : "bg-white/5 border-white/10 text-slate-300"
+                ${activeTab === "optimized"
+                  ? "bg-cyan-500/10 border-cyan-400/20 text-cyan-400"
+                  : "bg-white/5 border-white/10 text-slate-300"
                 }
               `}
             >
@@ -351,10 +414,9 @@ export default function Analyzer() {
                 transition-all
                 duration-300
 
-                ${
-                  activeTab === "explanation"
-                    ? "bg-white/10 border-white/20 text-white"
-                    : "bg-white/5 border-white/10 text-slate-300"
+                ${activeTab === "explanation"
+                  ? "bg-white/10 border-white/20 text-white"
+                  : "bg-white/5 border-white/10 text-slate-300"
                 }
               `}
             >

@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 3000;
 const Analysis = require('./models/Analysis');
 const mongoose = require('mongoose');
 const authRoutes = require("./routes/authRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 mongoose.connect('mongodb://127.0.0.1:27017/refactorx')
 .then(() => console.log("MongoDB connected"))
@@ -21,7 +22,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
-
+app.use("/api/dashboard", dashboardRoutes);
 app.get('/', (req, res) => {
   res.json({
     status: 'ok',

@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 
 export default function History() {
 
-  const historyItems = [];
-
   const [history, setHistory] = useState([]);
+  const [search, setSearch] = useState("");
+  const [filteredHistory, setFilteredHistory] =
+    useState([]);
   const [stats, setStats] = useState({
     totalAnalyses: 0,
     optimizedProjects: 0,
@@ -16,13 +17,14 @@ export default function History() {
 
       try {
 
-        const token = localStorage.getItem("token");
+        const token =
+          localStorage.getItem("token");
 
         const response = await fetch(
-          "http://localhost:3000/api/auth/analysis",
+          "http://localhost:5000/api/auth/analysis",
           {
             headers: {
-              Authorization: token,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -30,6 +32,7 @@ export default function History() {
         const data = await response.json();
 
         setHistory(data);
+        setFilteredHistory(data);
 
       } catch (error) {
 
@@ -50,9 +53,16 @@ export default function History() {
 
         try {
 
+          const token = localStorage.getItem("token");
+
           const response =
             await fetch(
-              "http://localhost:5000/api/dashboard/stats"
+              "http://localhost:5000/api/dashboard/stats",
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
             );
 
           const data =
@@ -71,6 +81,51 @@ export default function History() {
     fetchHistoryStats();
 
   }, []);
+
+  const handleSearch = (e) => {
+
+    const value = e.target.value;
+
+    setSearch(value);
+
+    const filtered = history.filter((item) =>
+      item.language
+        .toLowerCase()
+        .includes(value.toLowerCase())
+    );
+
+    setFilteredHistory(filtered);
+
+  };
+
+  const exportHistory = () => {
+
+    const dataStr = JSON.stringify(
+      history,
+      null,
+      2
+    );
+
+    const blob = new Blob(
+      [dataStr],
+      {
+        type: "application/json",
+      }
+    );
+
+    const url =
+      window.URL.createObjectURL(blob);
+
+    const a =
+      document.createElement("a");
+
+    a.href = url;
+
+    a.download = "history.json";
+
+    a.click();
+
+  };
 
   return (
 
@@ -118,6 +173,8 @@ export default function History() {
           <input
             type="text"
             placeholder="Search history..."
+            value={search}
+            onChange={handleSearch}
             className="
               bg-transparent
               outline-none
@@ -246,7 +303,7 @@ export default function History() {
 
           </div>
 
-          <button className="
+          <button onClick={exportHistory} className="
             px-6
             py-3
             rounded-2xl
@@ -264,128 +321,122 @@ export default function History() {
         {/* Items */}
         <div className="divide-y divide-white/5">
 
-          {historyItems.map((item, index) => (
+          {filteredHistory.length === 0 ? (
 
-            <div
-              key={index}
-              className="
-                px-8
-                py-6
-                flex
-                flex-col
-                xl:flex-row
-                xl:items-center
-                xl:justify-between
-                gap-6
-                hover:bg-white/[0.03]
-                transition-all
-              "
-            >
-
-              {/* Left */}
-              <div className="flex items-center gap-5">
-
-                {/* Icon */}
-                <div className="
-                  w-16
-                  h-16
-                  rounded-2xl
-                  bg-cyan-500/10
-                  border border-cyan-400/20
-                  flex
-                  items-center
-                  justify-center
-                  text-cyan-400
-                  text-2xl
-                ">
-                  ⚡
-                </div>
-
-                {/* Content */}
-                <div>
-
-                  <h3 className="
-                    text-xl
-                    font-semibold
-                    text-white
-                    mb-2
-                  ">
-                    {item.title}
-                  </h3>
-
-                  <p className="text-slate-500">
-                    {item.language} • {item.date}
-                  </p>
-
-                </div>
-
-              </div>
-
-              {/* Right */}
-              <div className="
-                flex
-                flex-wrap
-                items-center
-                gap-4
-              ">
-
-                {/* Score */}
-                <div className="
-                  px-5
-                  py-3
-                  rounded-2xl
-                  bg-white/5
-                  border border-white/10
-                  text-white
-                  font-medium
-                ">
-                  Score: {item.score}
-                </div>
-
-                {/* Status */}
-                <div className={`
-                  px-5
-                  py-3
-                  rounded-2xl
-                  font-medium
-
-                  ${item.status === "Optimized"
-                    ? "bg-cyan-500/10 text-cyan-400 border border-cyan-400/20"
-                    : item.status === "Completed"
-                      ? "bg-green-500/10 text-green-400 border border-green-400/20"
-                      : "bg-yellow-500/10 text-yellow-400 border border-yellow-400/20"
-                  }
-                `}>
-
-                  {item.status}
-
-                </div>
-
-                {/* Open */}
-                <button className="
-                  px-6
-                  py-3
-                  rounded-2xl
-                  bg-white/5
-                  border border-white/10
-                  text-slate-300
-                  hover:bg-white/10
-                  transition-all
-                ">
-                  Open
-                </button>
-
-              </div>
-
+            <div className="
+    p-10
+    text-center
+    text-slate-500
+  ">
+              No analysis history found.
             </div>
 
-          ))}
+          ) : (
+
+            filteredHistory.map((item, index) => (
+
+              <div
+                key={index}
+                className="
+        px-8
+        py-6
+        flex
+        flex-col
+        xl:flex-row
+        xl:items-center
+        xl:justify-between
+        gap-6
+        hover:bg-white/[0.03]
+        transition-all
+      "
+              >
+
+                {/* Left */}
+                <div className="flex items-center gap-5">
+
+                  <div className="
+          w-16
+          h-16
+          rounded-2xl
+          bg-cyan-500/10
+          border border-cyan-400/20
+          flex
+          items-center
+          justify-center
+          text-cyan-400
+          text-2xl
+        ">
+                    ⚡
+                  </div>
+
+                  <div>
+
+                    <h3 className="
+            text-xl
+            font-semibold
+            text-white
+            mb-2
+          ">
+                      {item.language} Analysis
+                    </h3>
+
+                    <p className="text-slate-500">
+                      {new Date(
+                        item.createdAt
+                      ).toLocaleString()}
+                    </p>
+
+                  </div>
+
+                </div>
+
+                {/* Right */}
+                <div className="
+        flex
+        flex-wrap
+        items-center
+        gap-4
+      ">
+
+                  <div className="
+          px-5
+          py-3
+          rounded-2xl
+          bg-cyan-500/10
+          border border-cyan-400/20
+          text-cyan-400
+          font-medium
+        ">
+                    Saved
+                  </div>
+
+                  <button className="
+          px-6
+          py-3
+          rounded-2xl
+          bg-white/5
+          border border-white/10
+          text-slate-300
+          hover:bg-white/10
+          transition-all
+        ">
+                    Open
+                  </button>
+
+                </div>
+
+              </div>
+
+            ))
+
+          )}
 
         </div>
+
+
 
       </div>
 
     </div>
-
   );
 }

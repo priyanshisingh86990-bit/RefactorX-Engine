@@ -8,6 +8,7 @@ export default function Projects() {
     activeWorkspaces: 0,
     completedProjects: 0,
   });
+  
   useEffect(() => {
 
     const fetchProjects = async () => {

@@ -3,6 +3,7 @@ import {
   useEffect,
   useState
 } from "react";
+import axios from "axios";
 
 
 export default function Overview() {
@@ -10,9 +11,10 @@ export default function Overview() {
   const [history, setHistory] = useState([]);
   const [stats, setStats] = useState({
     totalAnalyses: 0,
-    savedProjects: 0,
+    totalProjects: 0,
+    completedProjects: 0,
     aiCredits: 0,
-    recentActivity: [],
+    recentHistory: [],
   });
 
   useEffect(() => {
@@ -24,10 +26,10 @@ export default function Overview() {
         const token = localStorage.getItem("token");
 
         const response = await fetch(
-          "http://localhost:3000/api/auth/analysis",
+          "http://localhost:5000/api/auth/analysis",
           {
             headers: {
-              Authorization: token,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -54,8 +56,15 @@ export default function Overview() {
 
       try {
 
+        const token = localStorage.getItem("token");
+
         const response = await fetch(
-          "http://localhost:5000/api/dashboard/stats"
+          "http://localhost:5000/api/dashboard/stats",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
 
         const data = await response.json();
@@ -135,7 +144,7 @@ export default function Overview() {
           </p>
 
           <h2 className="text-4xl font-bold text-cyan-400">
-            {stats.savedProjects}
+            {stats.totalProjects}
           </h2>
 
         </div>
@@ -179,11 +188,19 @@ export default function Overview() {
 
         <div className="space-y-4">
 
-          {history.slice(0, 3).map((item, index) => (
+          {history.length === 0 ? (
 
-            <div
-              key={index}
-              className="
+            <p className="text-slate-500">
+              No recent activity found.
+            </p>
+
+          ) : (
+
+            history.slice(0, 3).map((item, index) => (
+
+              <div
+                key={index}
+                className="
         flex
         items-center
         justify-between
@@ -191,22 +208,22 @@ export default function Overview() {
         rounded-2xl
         bg-[#0f172a]
       "
-            >
+              >
 
-              <div>
+                <div>
 
-                <p className="text-white font-medium">
-                  {item.language} Analysis
-                </p>
+                  <p className="text-white font-medium">
+                    {item.language} Analysis
+                  </p>
 
-                <p className="text-slate-500 text-sm">
-                  {new Date(item.createdAt)
-                    .toLocaleString()}
-                </p>
+                  <p className="text-slate-500 text-sm">
+                    {new Date(item.createdAt)
+                      .toLocaleString()}
+                  </p>
 
-              </div>
+                </div>
 
-              <span className="
+                <span className="
         px-4
         py-2
         rounded-xl
@@ -214,12 +231,13 @@ export default function Overview() {
         text-cyan-400
         text-sm
       ">
-                Saved
-              </span>
+                  Saved
+                </span>
 
-            </div>
+              </div>
 
-          ))}
+            ))
+          )}
 
         </div>
 
